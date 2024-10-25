@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import plusIcon from '../../icons/plus.png';
 import crossIcon from '../../icons/cross.png';
+import DeleteModal from "../delete_button/delete";
 
 
 const CreateTask = () => {
     const [tasks, setTasks] = useState([]);
     const [title, setTitle] = useState('');
     const [about, setAbout] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [taskToDelete, setTaskToDelete] = useState(null);
 
     useEffect(() => {
         loadTasks();
@@ -27,11 +30,6 @@ const CreateTask = () => {
         setAbout('');
     };
 
-    const createTaskElement = (taskId, title, about) => {
-        const newTask = { id: taskId, title, about };
-        setTasks((prevTasks) => [...prevTasks, newTask]);
-    };
-
     const saveTasks = (updatedTasks) => {
         localStorage.setItem('tasks', JSON.stringify(updatedTasks));
     };
@@ -41,15 +39,29 @@ const CreateTask = () => {
         setTasks(savedTasks);
     };
 
-    const handleDeleteTask = (taskId) => {
-        const updatedTasks = tasks.filter(task => task.id !== taskId);
-        setTasks(updatedTasks);
-        saveTasks(updatedTasks);
+    const handleDeleteClick = (taskId) => {
+        setTaskToDelete(taskId);
+        setIsModalOpen(true);
+    };
+
+    const handleConfirmDelete = () => {
+        if (taskToDelete) {
+            const updatedTasks = tasks.filter(task => task.id !== taskToDelete);
+            setTasks(updatedTasks);
+            saveTasks(updatedTasks);
+            setTaskToDelete(null);
+        }
+        setIsModalOpen(false);
+    };
+
+    const handleCancelDelete = () => {
+        setIsModalOpen(false);
+        setTaskToDelete(null);
     };
 
     return (
         <div className="container">
-            {/* Обёртка для инпутов и кнопки "Добавить" */}
+            {/* Input fields and Add button */}
             <div className="input-container-wrapper">
                 <div className="input-container">
                     <input
@@ -74,7 +86,7 @@ const CreateTask = () => {
                 </button>
             </div>
 
-            {/* Логика отображения задач */}
+            {/* Task list */}
             <div id="taskMessage" className="task-message-container">
                 {tasks.length === 0 ? (
                     <div className="task-message">
@@ -93,18 +105,23 @@ const CreateTask = () => {
                                         : task.about}
                                 </p>
                             </div>
-                            <div className="delete-button" onClick={() => handleDeleteTask(task.id)}>
+                            <div className="delete-button" onClick={() => handleDeleteClick(task.id)}>
                                 <img src={crossIcon} alt="Удалить" />
                             </div>
                         </div>
                     ))
                 )}
             </div>
+
+            {/* Modal for delete confirmation */}
+            {isModalOpen && (
+                <DeleteModal
+                    onConfirm={handleConfirmDelete}
+                    onCancel={handleCancelDelete}
+                />
+            )}
         </div>
-
     );
-
-
 };
 
 export default CreateTask;
