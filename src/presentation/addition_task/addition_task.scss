@@ -1,30 +1,30 @@
-.task-container {
+.custom-task-container {
     background: #242320;
     border: 3px solid #A35709;
     border-radius: 10px;
     height: 60px;
-    width: calc(100% - 70px);
-    margin: 10px auto;
+    width: calc(100% - 5px);
+    margin: 2px 0;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
+    margin-left: -13px;
     transition: margin-bottom 0.3s ease;
     position: relative;
-}
 
-.task-container:hover {
-    margin-bottom: 70px;
+    &:hover {
+        margin-bottom: 50px;
+    }
 }
 
 .icons-container {
-    display: none;
-    position: absolute;
-    right: 10px;
-    bottom: -55px;
-    padding: 5px;
     display: flex;
+    position: absolute;
+    right: 5px;
+    bottom: -56px;
+    padding: 5px;
     border-radius: 5px;
 }
 
@@ -35,25 +35,22 @@
     padding: 5px;
     cursor: pointer;
     margin-left: 5px;
-    margin-top: 0;
-    transition: background 0.3s;
+    transition: background 0.3s, border-color 0.3s;
     width: 40px;
     height: 40px;
     display: flex;
     align-items: center;
-}
+    justify-content: center;
 
-.action-button:hover {
-    background: #A35709;
-    color: #FFFFFF;
-}
+    &:hover {
+        background: #A35709;
+        color: #FFFFFF;
+        border-color: #A35709;
+    }
 
-.action-button img {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
-}
-
-.task-container:hover .icons-container {
-    display: flex;
+    img {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+    }
 }

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import plusIcon from '../../icons/plus.png';
-import crossIcon from '../../icons/cross.png';
 import DeleteModal from "../delete_button/delete";
-
+import AdditionTask from '../addition_task/addition_task';
 
 const CreateTask = () => {
     const [tasks, setTasks] = useState([]);
@@ -61,7 +60,6 @@ const CreateTask = () => {
 
     return (
         <div className="container">
-            {/* Input fields and Add button */}
             <div className="input-container-wrapper">
                 <div className="input-container">
                     <input
@@ -86,7 +84,6 @@ const CreateTask = () => {
                 </button>
             </div>
 
-            {/* Task list */}
             <div id="taskMessage" className="task-message-container">
                 {tasks.length === 0 ? (
                     <div className="task-message">
@@ -97,23 +94,16 @@ const CreateTask = () => {
                 ) : (
                     tasks.map((task) => (
                         <div key={task.id} className="task-container" data-id={task.id}>
-                            <div className="task-container-text">
-                                <h3 className="task-title">{task.title}</h3>
-                                <p className="task-about" title={task.about}>
-                                    {task.about.length > 50
-                                        ? task.about.substring(0, 50) + "..."
-                                        : task.about}
-                                </p>
-                            </div>
-                            <div className="delete-button" onClick={() => handleDeleteClick(task.id)}>
-                                <img src={crossIcon} alt="Удалить" />
-                            </div>
+                            <AdditionTask
+                                taskTitle={task.title}
+                                taskAbout={task.about}
+                                onDelete={() => handleDeleteClick(task.id)} // Pass delete handler
+                            />
                         </div>
                     ))
                 )}
             </div>
 
-            {/* Modal for delete confirmation */}
             {isModalOpen && (
                 <DeleteModal
                     onConfirm={handleConfirmDelete}

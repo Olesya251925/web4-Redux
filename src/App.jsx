@@ -10,8 +10,6 @@ import './App.css';
 
 import CreateTask from './presentation/creat_task/create_task.jsx';
 
-
-
 function App() {
   return (
     <div>
