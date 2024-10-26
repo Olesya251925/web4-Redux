@@ -1,25 +1,23 @@
 import React, { useState } from 'react';
 import './addition_task.scss';
 
-const AdditionTask = ({ taskTitle, taskAbout, onDelete }) => {
+const AdditionTask = ({ taskTitle, taskAbout, onDelete, onEdit }) => {
     const [showIcons, setShowIcons] = useState(false);
 
     const handleShareClick = () => {
-        // Логика для кнопки "Поделиться"
-        openShareModal(taskTitle, taskAbout);
+        // Logic for Share button
     };
 
     const handleEditClick = () => {
-        // Логика для кнопки "Редактировать"
-        openEditModal();
+        // Call the onEdit prop function passed from CreateTask
+        onEdit({ title: taskTitle, about: taskAbout });
     };
 
     const handleInfoClick = () => {
-        // Логика для кнопки "Инфо"
+        // Logic for Info button
     };
 
     const handleDeleteClick = () => {
-        // Вызываем функцию onDelete, переданную из родительского компонента
         onDelete();
     };
 
@@ -36,20 +34,19 @@ const AdditionTask = ({ taskTitle, taskAbout, onDelete }) => {
 
             {showIcons && (
                 <div className="icons-container">
-                    <button className="action-button" onClick={handleShareClick} id="shareIcon">
+                    <button className="action-button" onClick={handleShareClick}>
                         <img src="src/icons/sharee.png" alt="Share" className="action-icon" />
                     </button>
-                    <button className="action-button" onClick={handleEditClick} id="editIcon">
+                    <button className="action-button" onClick={handleEditClick}>
                         <img src="src/icons/edit.png" alt="Edit" className="action-icon" />
                     </button>
-                    <button className="action-button" onClick={handleInfoClick} id="infoIcon">
+                    <button className="action-button" onClick={handleInfoClick}>
                         <img src="src/icons/info.png" alt="Info" className="action-icon" />
                     </button>
                 </div>
             )}
 
-            {/* Кнопка Удалить, расположенная в custom-task-container */}
-            <button className="action-button delete-button" onClick={handleDeleteClick} id="deleteIcon">
+            <button className="action-button delete-button" onClick={handleDeleteClick}>
                 <img src="src/icons/cross.png" alt="Delete" className="action-icon" />
             </button>
         </div>
