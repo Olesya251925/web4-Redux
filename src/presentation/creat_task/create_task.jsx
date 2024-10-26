@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'; // Импортируйте компоненты перетаскивания
 import plusIcon from '../../icons/plus.png';
 import DeleteModal from "../delete_button/delete";
 import AdditionTask from '../addition_task/addition_task';
@@ -16,8 +17,6 @@ const CreateTask = () => {
     const [taskToDelete, setTaskToDelete] = useState(null);
     const [taskToEdit, setTaskToEdit] = useState(null);
     const [taskToShare, setTaskToShare] = useState(null);
-
-    // Добавляем состояние для управления отображением полного текста
     const [expandedTaskId, setExpandedTaskId] = useState(null);
 
     useEffect(() => {
@@ -92,9 +91,19 @@ const CreateTask = () => {
         setTaskToShare(null);
     };
 
-    // Обработчик клика по задаче для отображения полного текста
     const handleToggleExpand = (taskId) => {
         setExpandedTaskId(expandedTaskId === taskId ? null : taskId);
+    };
+
+    // Новая функция для обработки перетаскивания
+    const handleOnDragEnd = (result) => {
+        if (!result.destination) return;
+
+        const reorderedTasks = Array.from(tasks);
+        const [movedTask] = reorderedTasks.splice(result.source.index, 1);
+        reorderedTasks.splice(result.destination.index, 0, movedTask);
+        setTasks(reorderedTasks);
+        saveTasks(reorderedTasks);
     };
 
     return (
@@ -117,40 +126,60 @@ const CreateTask = () => {
                     />
                 </div>
                 <button className="add-button" onClick={handleAddClick}>
-                    <img src={plusIcon} alt="Add" className="add-icon" />
+                    <img src={plusIcon} alt="Добавить" className="add-icon" />
                 </button>
             </div>
 
             {errorMessage && <div className="error-message">{errorMessage}</div>}
 
-            <div className="task-message-container">
-                {tasks.length === 0 ? (
-                    <div className="task-message">
-                        <hr className="task-line" />
-                        <span>No tasks</span>
-                        <hr className="task-line" />
-                    </div>
-                ) : (
-                    tasks.map((task) => (
-                        <div key={task.id} className="task-container">
-                            <AdditionTask
-                                taskTitle={task.title}
-                                taskAbout={
-                                    expandedTaskId === task.id
-                                        ? task.about
-                                        : task.about.length > 50
-                                            ? task.about.slice(0, 50) + '...'
-                                            : task.about
-                                }
-                                onToggleExpand={() => handleToggleExpand(task.id)} // Передаем обработчик клика
-                                onDelete={() => handleDeleteClick(task.id)}
-                                onEdit={() => handleEditTask(task)}
-                                onShare={handleShareClick}
-                            />
+            <DragDropContext onDragEnd={handleOnDragEnd}>
+                <Droppable droppableId="tasks">
+                    {(provided) => (
+                        <div
+                            className="task-message-container"
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                        >
+                            {tasks.length === 0 ? (
+                                <div className="task-message">
+                                    <hr className="task-line" />
+                                    <span>No tasks</span>
+                                    <hr className="task-line" />
+                                </div>
+                            ) : (
+                                tasks.map((task, index) => (
+                                    <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
+                                        {(provided) => (
+                                            <div
+                                                className="task-container"
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                            >
+                                                <AdditionTask
+                                                    taskTitle={task.title}
+                                                    taskAbout={
+                                                        expandedTaskId === task.id
+                                                            ? task.about
+                                                            : task.about.length > 50
+                                                                ? task.about.slice(0, 50) + '...'
+                                                                : task.about
+                                                    }
+                                                    onToggleExpand={() => handleToggleExpand(task.id)}
+                                                    onDelete={() => handleDeleteClick(task.id)}
+                                                    onEdit={() => handleEditTask(task)}
+                                                    onShare={handleShareClick}
+                                                />
+                                            </div>
+                                        )}
+                                    </Draggable>
+                                ))
+                            )}
+                            {provided.placeholder}
                         </div>
-                    ))
-                )}
-            </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
 
             {isDeleteModalOpen && (
                 <DeleteModal
