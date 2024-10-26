@@ -38,22 +38,27 @@ body {
         justify-content: center;
         align-items: center;
         transition: background 0.3s, transform 0.3s;
+        outline: none;
 
         &:hover {
             background: #A35709;
             transform: scale(1.05);
+
+            img {
+                filter: brightness(0) invert(1);
+            }
         }
 
         img {
             width: 18px;
             height: 18px;
             transition: filter 0.3s;
-
-            &:hover {
-                filter: brightness(0) invert(1);
-            }
         }
     }
+}
+
+.delete-button:focus {
+    outline: none;
 }
 
 .task-about {
@@ -76,10 +81,6 @@ body {
     color: #F0E3CA;
     margin: 0;
     margin-bottom: 10px;
-}
-
-.task-container.hover {
-    transform: scale(1.02);
 }
 
 @media (max-width: 600px) {

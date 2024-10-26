@@ -17,6 +17,9 @@ const CreateTask = () => {
     const [taskToEdit, setTaskToEdit] = useState(null);
     const [taskToShare, setTaskToShare] = useState(null);
 
+    // Добавляем состояние для управления отображением полного текста
+    const [expandedTaskId, setExpandedTaskId] = useState(null);
+
     useEffect(() => {
         loadTasks();
     }, []);
@@ -89,6 +92,11 @@ const CreateTask = () => {
         setTaskToShare(null);
     };
 
+    // Обработчик клика по задаче для отображения полного текста
+    const handleToggleExpand = (taskId) => {
+        setExpandedTaskId(expandedTaskId === taskId ? null : taskId);
+    };
+
     return (
         <div className="container">
             <div className="input-container-wrapper">
@@ -127,7 +135,14 @@ const CreateTask = () => {
                         <div key={task.id} className="task-container">
                             <AdditionTask
                                 taskTitle={task.title}
-                                taskAbout={task.about}
+                                taskAbout={
+                                    expandedTaskId === task.id
+                                        ? task.about
+                                        : task.about.length > 50
+                                            ? task.about.slice(0, 50) + '...'
+                                            : task.about
+                                }
+                                onToggleExpand={() => handleToggleExpand(task.id)} // Передаем обработчик клика
                                 onDelete={() => handleDeleteClick(task.id)}
                                 onEdit={() => handleEditTask(task)}
                                 onShare={handleShareClick}
