@@ -1,24 +1,20 @@
 import React, { useState } from 'react';
 import './addition_task.scss';
 
-const AdditionTask = ({ taskTitle, taskAbout, onDelete, onEdit }) => {
+const AdditionTask = ({ taskTitle, taskAbout, onDelete, onEdit, onShare }) => {
     const [showIcons, setShowIcons] = useState(false);
 
     const handleShareClick = () => {
-        // Logic for Share button
+        // Вызываем функцию onShare, передавая текущую задачу
+        onShare({ title: taskTitle, about: taskAbout });
     };
 
     const handleEditClick = () => {
-        // Call the onEdit prop function passed from CreateTask
         onEdit({ title: taskTitle, about: taskAbout });
     };
 
     const handleInfoClick = () => {
-        // Logic for Info button
-    };
-
-    const handleDeleteClick = () => {
-        onDelete();
+        // Логика для кнопки Info
     };
 
     return (
@@ -46,7 +42,7 @@ const AdditionTask = ({ taskTitle, taskAbout, onDelete, onEdit }) => {
                 </div>
             )}
 
-            <button className="action-button delete-button" onClick={handleDeleteClick}>
+            <button className="action-button delete-button" onClick={onDelete}>
                 <img src="src/icons/cross.png" alt="Delete" className="action-icon" />
             </button>
         </div>

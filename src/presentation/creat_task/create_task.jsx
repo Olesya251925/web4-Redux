@@ -3,16 +3,19 @@ import plusIcon from '../../icons/plus.png';
 import DeleteModal from "../delete_button/delete";
 import AdditionTask from '../addition_task/addition_task';
 import EditModal from '../edit/edit';
+import ShareModal from '../share/share_task';
 
 const CreateTask = () => {
     const [tasks, setTasks] = useState([]);
     const [title, setTitle] = useState('');
     const [about, setAbout] = useState('');
-    const [errorMessage, setErrorMessage] = useState(''); // State for error message
+    const [errorMessage, setErrorMessage] = useState('');
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [taskToDelete, setTaskToDelete] = useState(null);
     const [taskToEdit, setTaskToEdit] = useState(null);
+    const [taskToShare, setTaskToShare] = useState(null);
 
     useEffect(() => {
         loadTasks();
@@ -20,21 +23,17 @@ const CreateTask = () => {
 
     const handleAddClick = () => {
         if (title.trim() === "" || about.trim() === "") {
-            setErrorMessage("Пожалуйста, заполните все поля!"); // Set error message
+            alert("Пожалуйста, заполните все поля!");
             return;
         }
 
         const taskId = Date.now() + Math.random();
         const newTask = { id: taskId, title, about };
 
-        setTasks((prevTasks) => {
-            const updatedTasks = [...prevTasks, newTask];
-            saveTasks(updatedTasks);
-            return updatedTasks;
-        });
+        setTasks((prevTasks) => [...prevTasks, newTask]);
+        saveTasks([...tasks, newTask]);
         setTitle('');
         setAbout('');
-        setErrorMessage(''); // Clear error message
     };
 
     const saveTasks = (updatedTasks) => {
@@ -80,6 +79,16 @@ const CreateTask = () => {
         setIsEditModalOpen(false);
     };
 
+    const handleShareClick = (task) => {
+        setTaskToShare(task);
+        setIsShareModalOpen(true);
+    };
+
+    const handleCloseShareModal = () => {
+        setIsShareModalOpen(false);
+        setTaskToShare(null);
+    };
+
     return (
         <div className="container">
             <div className="input-container-wrapper">
@@ -104,7 +113,7 @@ const CreateTask = () => {
                 </button>
             </div>
 
-            {errorMessage && <div className="error-message">{errorMessage}</div>} {/* Display error message */}
+            {errorMessage && <div className="error-message">{errorMessage}</div>}
 
             <div className="task-message-container">
                 {tasks.length === 0 ? (
@@ -121,6 +130,7 @@ const CreateTask = () => {
                                 taskAbout={task.about}
                                 onDelete={() => handleDeleteClick(task.id)}
                                 onEdit={() => handleEditTask(task)}
+                                onShare={handleShareClick}
                             />
                         </div>
                     ))
@@ -140,6 +150,14 @@ const CreateTask = () => {
                     onClose={() => setIsEditModalOpen(false)}
                     task={taskToEdit}
                     onSave={handleSaveEdit}
+                />
+            )}
+
+            {isShareModalOpen && taskToShare && (
+                <ShareModal
+                    title={taskToShare.title}
+                    about={taskToShare.about}
+                    onClose={handleCloseShareModal}
                 />
             )}
         </div>
