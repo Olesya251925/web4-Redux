@@ -14,7 +14,7 @@ function App() {
   return (
     <div>
       <div className="container">
-        <CreateTask /> {/* Используйте компонент CreateTask */}
+        <CreateTask />
       </div>
     </div>
   );

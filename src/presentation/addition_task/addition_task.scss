@@ -2,13 +2,13 @@
     background: #242320;
     border: 3px solid #A35709;
     border-radius: 10px;
-    height: 60px;
+    height: auto;
     width: calc(100% - 5px);
-    margin: 2px 0;
+    margin: 7px 0;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     padding: 10px;
     margin-left: -13px;
     transition: margin-bottom 0.3s ease;
@@ -28,6 +28,25 @@
     border-radius: 5px;
 }
 
+.task-content {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.task-about {
+    margin: 0;
+    transition: max-height 0.3s ease;
+}
+
+.task-about.collapsed {
+    max-height: 40px;
+    overflow: hidden;
+}
+
+.task-about.expanded {
+    max-height: none;
+}
+
 .action-button {
     background: transparent;
     border: 3px solid #A35709;
@@ -41,6 +60,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 
     &:hover {
         background: #A35709;

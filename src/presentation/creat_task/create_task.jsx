@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'; // Импортируйте компоненты перетаскивания
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import plusIcon from '../../icons/plus.png';
+
 import DeleteModal from "../delete_button/delete";
 import AdditionTask from '../addition_task/addition_task';
 import EditModal from '../edit/edit';
@@ -95,7 +96,6 @@ const CreateTask = () => {
         setExpandedTaskId(expandedTaskId === taskId ? null : taskId);
     };
 
-    // Новая функция для обработки перетаскивания
     const handleOnDragEnd = (result) => {
         if (!result.destination) return;
 
