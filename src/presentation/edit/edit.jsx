@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './edit.scss';
+import { useSelector, useDispatch } from 'react-redux';
+import { editTask } from "../../features/taskSlice";
 
-export default function EditModal({ isOpen, onClose, task, onSave }) {
+export default function EditModal({ isOpen, onClose, task }) {
+    const dispatch = useDispatch();
+    const errorMessage = useSelector((state) => state.tasks.errorMessage);
     const [title, setTitle] = React.useState(task.title);
     const [about, setAbout] = React.useState(task.about);
-    const [errorMessage, setErrorMessage] = React.useState('');
+
+    useEffect(() => {
+        setTitle(task.title);
+        setAbout(task.about);
+    }, [task]);
 
     const handleClose = () => {
         onClose();
@@ -12,11 +20,11 @@ export default function EditModal({ isOpen, onClose, task, onSave }) {
 
     const handleSave = () => {
         if (!title || !about) {
-            setErrorMessage('Please fill in all fields!');
+            dispatch({ type: 'tasks/setErrorMessage', payload: 'Please fill in all fields!' });
             return;
         }
 
-        onSave({ ...task, title, about });
+        dispatch(editTask({ ...task, title, about }));
         onClose();
     };
 
@@ -30,7 +38,7 @@ export default function EditModal({ isOpen, onClose, task, onSave }) {
                     value={title}
                     onChange={(e) => {
                         setTitle(e.target.value);
-                        if (errorMessage) setErrorMessage(''); // Сбрасываем сообщение об ошибке при вводе
+                        if (errorMessage) dispatch({ type: 'tasks/setErrorMessage', payload: '' });
                     }}
                     placeholder="Mini Input"
                     className="modal-input"
@@ -39,7 +47,7 @@ export default function EditModal({ isOpen, onClose, task, onSave }) {
                     value={about}
                     onChange={(e) => {
                         setAbout(e.target.value);
-                        if (errorMessage) setErrorMessage(''); // Сбрасываем сообщение об ошибке при вводе
+                        if (errorMessage) dispatch({ type: 'tasks/setErrorMessage', payload: '' });
                     }}
                     placeholder="Max Input"
                     className="modal-textarea"
@@ -52,7 +60,7 @@ export default function EditModal({ isOpen, onClose, task, onSave }) {
                     <div id="error-message" className="error-container">
                         {errorMessage}
                     </div>
-                )} {/* Сообщение об ошибке */}
+                )}
             </div>
         </div>
     );

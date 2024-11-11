@@ -1,17 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-// Функция для загрузки задач из localStorage
 const loadTasksFromLocalStorage = () => {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     return tasks;
 };
 
 const initialState = {
-    tasks: loadTasksFromLocalStorage(),  // Загружаем задачи из localStorage при инициализации
+    tasks: loadTasksFromLocalStorage(),
     isShareModalOpen: false,
     sharedTask: null,
     isDeleteModalOpen: false,
     taskToDelete: null,
+    errorMessage: ''
 };
 
 const taskSlice = createSlice({
@@ -20,27 +20,27 @@ const taskSlice = createSlice({
     reducers: {
         addTask: (state, action) => {
             state.tasks.push(action.payload);
-            localStorage.setItem('tasks', JSON.stringify(state.tasks)); // Сохраняем задачи в localStorage
+            localStorage.setItem('tasks', JSON.stringify(state.tasks)); // Save tasks to localStorage
         },
         deleteTask: (state, action) => {
             state.tasks = state.tasks.filter((task) => task.id !== action.payload);
-            localStorage.setItem('tasks', JSON.stringify(state.tasks)); // Обновляем localStorage
+            localStorage.setItem('tasks', JSON.stringify(state.tasks));
         },
         editTask: (state, action) => {
             const index = state.tasks.findIndex((task) => task.id === action.payload.id);
             if (index !== -1) {
                 state.tasks[index] = action.payload;
-                localStorage.setItem('tasks', JSON.stringify(state.tasks)); // Обновляем localStorage
+                localStorage.setItem('tasks', JSON.stringify(state.tasks));
             }
         },
         loadTasks: (state, action) => {
             state.tasks = action.payload;
-            localStorage.setItem('tasks', JSON.stringify(state.tasks)); // Сохраняем задачи в localStorage
+            localStorage.setItem('tasks', JSON.stringify(state.tasks));
         },
         reorderTasks: (state, action) => {
             const [movedTask] = state.tasks.splice(action.payload.sourceIndex, 1);
             state.tasks.splice(action.payload.destinationIndex, 0, movedTask);
-            localStorage.setItem('tasks', JSON.stringify(state.tasks)); // Обновляем localStorage
+            localStorage.setItem('tasks', JSON.stringify(state.tasks));
         },
         openShareModal: (state, action) => {
             state.isShareModalOpen = true;
@@ -58,6 +58,9 @@ const taskSlice = createSlice({
             state.isDeleteModalOpen = false;
             state.taskToDelete = null;
         },
+        setErrorMessage: (state, action) => {
+            state.errorMessage = action.payload;
+        }
     },
 });
 
@@ -70,7 +73,8 @@ export const {
     openShareModal,
     closeShareModal,
     openDeleteModal,
-    closeDeleteModal
+    closeDeleteModal,
+    setErrorMessage
 } = taskSlice.actions;
 
 export default taskSlice.reducer;
