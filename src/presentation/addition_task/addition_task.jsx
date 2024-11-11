@@ -1,23 +1,40 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import './addition_task.scss';
 import shareIcon from '../../icons/sharee.png';
 import editIcon from '../../icons/edit.png';
 import infoIcon from '../../icons/info.png';
 import deleteIcon from '../../icons/cross.png';
+import { openShareModal, openDeleteModal } from "../../features/taskSlice";
 
-const AdditionTask = ({ taskTitle, taskAbout, onToggleExpand, onDelete, onEdit, onShare }) => {
+const AdditionTask = ({ task, onToggleExpand, onEdit }) => {
     const [showIcons, setShowIcons] = useState(false);
+    const [expanded, setExpanded] = useState(false); // Track whether the task description is expanded
+    const dispatch = useDispatch();
 
-    const handleShareClick = () => {
-        onShare({ title: taskTitle, about: taskAbout });
+    // Handle toggle of expanded state for the task description
+    const handleToggleExpand = () => {
+        setExpanded(!expanded);
+        onToggleExpand(); // Notify parent (CreateTask) about the toggle action
     };
 
+    // Обработчик для открытия модального окна Share
+    const handleShareClick = () => {
+        dispatch(openShareModal(task));
+    };
+
+    // Обработчик для редактирования задачи
     const handleEditClick = () => {
-        onEdit({ title: taskTitle, about: taskAbout });
+        onEdit(task);
     };
 
     const handleInfoClick = () => {
         // Логика для кнопки Info
+    };
+
+    // Обработчик для открытия модального окна Delete
+    const handleDeleteClick = () => {
+        dispatch(openDeleteModal(task.id));
     };
 
     return (
@@ -27,9 +44,14 @@ const AdditionTask = ({ taskTitle, taskAbout, onToggleExpand, onDelete, onEdit, 
             onMouseLeave={() => setShowIcons(false)}
         >
             <div className="task-content">
-                <h3 className="task-title">{taskTitle}</h3>
-                <p onClick={onToggleExpand} className="task-about">
-                    {taskAbout}
+                <h3 className="task-title">{task.title}</h3>
+                <p onClick={handleToggleExpand} className="task-about">
+                    {expanded
+                        ? task.about
+                        : task.about.length > 50
+                            ? task.about.slice(0, 50) + '...'
+                            : task.about
+                    }
                 </p>
             </div>
 
@@ -47,7 +69,7 @@ const AdditionTask = ({ taskTitle, taskAbout, onToggleExpand, onDelete, onEdit, 
                 </div>
             )}
 
-            <button className="action-button delete-button" onClick={onDelete}>
+            <button className="action-button delete-button" onClick={handleDeleteClick}>
                 <img src={deleteIcon} alt="Delete" className="action-icon" />
             </button>
         </div>

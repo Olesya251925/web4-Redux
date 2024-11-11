@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { addTask, deleteTask, editTask, loadTasks, reorderTasks } from "../../features/taskSlice";
-
 import plusIcon from '../../icons/plus.png';
 import DeleteModal from "../delete_button/delete";
 import AdditionTask from '../addition_task/addition_task';
@@ -155,13 +154,7 @@ const CreateTask = () => {
                                                 {...provided.dragHandleProps}
                                             >
                                                 <AdditionTask
-                                                    taskTitle={task.title}
-                                                    taskAbout={expandedTaskId === task.id
-                                                        ? task.about
-                                                        : task.about.length > 50
-                                                            ? task.about.slice(0, 50) + '...'
-                                                            : task.about
-                                                    }
+                                                    task={task}
                                                     onToggleExpand={() => handleToggleExpand(task.id)}
                                                     onDelete={() => handleDeleteClick(task.id)}
                                                     onEdit={() => handleEditTask(task)}
@@ -171,6 +164,7 @@ const CreateTask = () => {
                                         )}
                                     </Draggable>
                                 ))
+
                             )}
                             {provided.placeholder}
                         </div>

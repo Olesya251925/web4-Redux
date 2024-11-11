@@ -1,19 +1,33 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import './share_task.scss';
+import { closeShareModal } from '../../features/taskSlice';
 
-const ShareModal = ({ title, about, onClose }) => {
-    const handleCopyClick = () => {
-        const textToCopy = `${title}\n${about}`;
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            console.log('Текст скопирован в буфер обмена');
-            onClose();
-        }).catch(err => {
-            console.error('Ошибка при копировании текста: ', err);
-        });
+const ShareModal = () => {
+    const dispatch = useDispatch();
+    const { sharedTask } = useSelector(state => state.tasks);
+
+    // Обработчик для закрытия модального окна
+    const handleClose = () => {
+        dispatch(closeShareModal());
     };
 
+    const handleCopyClick = () => {
+        if (sharedTask) {
+            const textToCopy = `${sharedTask.title}\n${sharedTask.about}`;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                console.log('Текст скопирован в буфер обмена');
+                handleClose();
+            }).catch(err => {
+                console.error('Ошибка при копировании текста: ', err);
+            });
+        }
+    };
+
+    if (!sharedTask) return null;
+
     return (
-        <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-overlay" onClick={handleClose}>
             <div className="modal-share" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-share-content">
                     <button className="share-button" onClick={handleCopyClick}>
