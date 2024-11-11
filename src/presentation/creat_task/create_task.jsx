@@ -51,7 +51,7 @@ const CreateTask = () => {
     const handleConfirmDelete = () => {
         if (taskToDelete) {
             dispatch(deleteTask(taskToDelete));
-            localStorage.setItem('tasks', JSON.stringify(tasks.filter(task => task.id !== taskToDelete)));
+            removeTaskFromLocalStorage(taskToDelete.id);
             setTaskToDelete(null);
         }
         setIsDeleteModalOpen(false);

@@ -7,15 +7,20 @@ const DeleteModal = () => {
     const dispatch = useDispatch();
     const { taskToDelete } = useSelector(state => state.tasks);
 
-    // Обработчик для подтверждения удаления
+    const removeTaskFromLocalStorage = (taskId) => {
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        const updatedTasks = tasks.filter(task => task.id !== taskId);
+        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    };
+
     const handleConfirm = () => {
         if (taskToDelete) {
             dispatch(deleteTask(taskToDelete));
+            removeTaskFromLocalStorage(taskToDelete.id);
             dispatch(closeDeleteModal());
         }
     };
 
-    // Обработчик для отмены удаления
     const handleCancel = () => {
         dispatch(closeDeleteModal());
     };

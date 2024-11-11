@@ -9,21 +9,18 @@ import { openShareModal, openDeleteModal } from "../../features/taskSlice";
 
 const AdditionTask = ({ task, onToggleExpand, onEdit }) => {
     const [showIcons, setShowIcons] = useState(false);
-    const [expanded, setExpanded] = useState(false); // Track whether the task description is expanded
+    const [expanded, setExpanded] = useState(false);
     const dispatch = useDispatch();
 
-    // Handle toggle of expanded state for the task description
     const handleToggleExpand = () => {
         setExpanded(!expanded);
-        onToggleExpand(); // Notify parent (CreateTask) about the toggle action
+        onToggleExpand();
     };
 
-    // Обработчик для открытия модального окна Share
     const handleShareClick = () => {
         dispatch(openShareModal(task));
     };
 
-    // Обработчик для редактирования задачи
     const handleEditClick = () => {
         onEdit(task);
     };
@@ -32,7 +29,6 @@ const AdditionTask = ({ task, onToggleExpand, onEdit }) => {
         // Логика для кнопки Info
     };
 
-    // Обработчик для открытия модального окна Delete
     const handleDeleteClick = () => {
         dispatch(openDeleteModal(task.id));
     };
