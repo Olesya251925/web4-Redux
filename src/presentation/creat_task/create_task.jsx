@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import plusIcon from '../../icons/plus.png';
+import { addTask, deleteTask, editTask, loadTasks, reorderTasks } from "../../features/taskSlice";
 
+import plusIcon from '../../icons/plus.png';
 import DeleteModal from "../delete_button/delete";
 import AdditionTask from '../addition_task/addition_task';
 import EditModal from '../edit/edit';
 import ShareModal from '../share/share_task';
 
 const CreateTask = () => {
-    const [tasks, setTasks] = useState([]);
+    const tasks = useSelector((state) => state.tasks.tasks);
+    const dispatch = useDispatch();
+
     const [title, setTitle] = useState('');
     const [about, setAbout] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -21,8 +25,9 @@ const CreateTask = () => {
     const [expandedTaskId, setExpandedTaskId] = useState(null);
 
     useEffect(() => {
-        loadTasks();
-    }, []);
+        const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        dispatch(loadTasks(savedTasks));
+    }, [dispatch]);
 
     const handleAddClick = () => {
         if (title.trim() === "" || about.trim() === "") {
@@ -33,19 +38,10 @@ const CreateTask = () => {
         const taskId = Date.now() + Math.random();
         const newTask = { id: taskId, title, about };
 
-        setTasks((prevTasks) => [...prevTasks, newTask]);
-        saveTasks([...tasks, newTask]);
+        dispatch(addTask(newTask));
+        localStorage.setItem('tasks', JSON.stringify([...tasks, newTask]));
         setTitle('');
         setAbout('');
-    };
-
-    const saveTasks = (updatedTasks) => {
-        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-    };
-
-    const loadTasks = () => {
-        const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-        setTasks(savedTasks);
     };
 
     const handleDeleteClick = (taskId) => {
@@ -55,9 +51,8 @@ const CreateTask = () => {
 
     const handleConfirmDelete = () => {
         if (taskToDelete) {
-            const updatedTasks = tasks.filter(task => task.id !== taskToDelete);
-            setTasks(updatedTasks);
-            saveTasks(updatedTasks);
+            dispatch(deleteTask(taskToDelete));
+            localStorage.setItem('tasks', JSON.stringify(tasks.filter(task => task.id !== taskToDelete)));
             setTaskToDelete(null);
         }
         setIsDeleteModalOpen(false);
@@ -74,11 +69,10 @@ const CreateTask = () => {
     };
 
     const handleSaveEdit = (updatedTask) => {
-        const updatedTasks = tasks.map(task =>
+        dispatch(editTask(updatedTask));
+        localStorage.setItem('tasks', JSON.stringify(tasks.map(task =>
             task.id === updatedTask.id ? updatedTask : task
-        );
-        setTasks(updatedTasks);
-        saveTasks(updatedTasks);
+        )));
         setIsEditModalOpen(false);
     };
 
@@ -99,11 +93,10 @@ const CreateTask = () => {
     const handleOnDragEnd = (result) => {
         if (!result.destination) return;
 
-        const reorderedTasks = Array.from(tasks);
-        const [movedTask] = reorderedTasks.splice(result.source.index, 1);
-        reorderedTasks.splice(result.destination.index, 0, movedTask);
-        setTasks(reorderedTasks);
-        saveTasks(reorderedTasks);
+        const sourceIndex = result.source.index;
+        const destinationIndex = result.destination.index;
+        dispatch(reorderTasks({ sourceIndex, destinationIndex }));
+        localStorage.setItem('tasks', JSON.stringify(tasks));
     };
 
     return (
@@ -158,12 +151,11 @@ const CreateTask = () => {
                                             >
                                                 <AdditionTask
                                                     taskTitle={task.title}
-                                                    taskAbout={
-                                                        expandedTaskId === task.id
-                                                            ? task.about
-                                                            : task.about.length > 50
-                                                                ? task.about.slice(0, 50) + '...'
-                                                                : task.about
+                                                    taskAbout={expandedTaskId === task.id
+                                                        ? task.about
+                                                        : task.about.length > 50
+                                                            ? task.about.slice(0, 50) + '...'
+                                                            : task.about
                                                     }
                                                     onToggleExpand={() => handleToggleExpand(task.id)}
                                                     onDelete={() => handleDeleteClick(task.id)}
