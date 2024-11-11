@@ -95,8 +95,13 @@ const CreateTask = () => {
 
         const sourceIndex = result.source.index;
         const destinationIndex = result.destination.index;
+
         dispatch(reorderTasks({ sourceIndex, destinationIndex }));
-        localStorage.setItem('tasks', JSON.stringify(tasks));
+
+        const reorderedTasks = [...tasks];
+        const [movedTask] = reorderedTasks.splice(sourceIndex, 1);
+        reorderedTasks.splice(destinationIndex, 0, movedTask);
+        localStorage.setItem('tasks', JSON.stringify(reorderedTasks));
     };
 
     return (
