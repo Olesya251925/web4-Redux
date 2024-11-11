@@ -62,10 +62,22 @@
     justify-content: center;
     flex-shrink: 0;
 
+    outline: none;
+
     &:hover {
         background: #A35709;
         color: #FFFFFF;
         border-color: #A35709;
+    }
+
+    &:focus {
+        border-color: #A35709;
+        outline: none;
+    }
+
+    &:active {
+        border-color: #A35709;
+        background: #A35709;
     }
 
     img {
