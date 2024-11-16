@@ -2,10 +2,10 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import './style_title_about_add_button/stylesMain.scss';
 import './presentation/addition_task/addition_task.scss';
-import "./presentation/creat_task/create_tasks.scss";
+import "./presentation/create_task/create_tasks.scss";
 import './App.css';
 
-import CreateTask from './presentation/creat_task/create_task.jsx';
+import CreateTask from './presentation/create_task/create_task.jsx';
 import ShareModal from './presentation/share/share_task.jsx';
 import DeleteModal from './presentation/delete_button/delete.jsx';
 

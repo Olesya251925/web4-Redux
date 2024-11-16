@@ -7,7 +7,6 @@ const ShareModal = () => {
     const dispatch = useDispatch();
     const { sharedTask } = useSelector(state => state.tasks);
 
-    // Обработчик для закрытия модального окна
     const handleClose = () => {
         dispatch(closeShareModal());
     };

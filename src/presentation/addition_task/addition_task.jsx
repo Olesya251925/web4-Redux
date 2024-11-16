@@ -26,7 +26,7 @@ const AdditionTask = ({ task, onToggleExpand, onEdit }) => {
     };
 
     const handleInfoClick = () => {
-        // Логика для кнопки Info
+
     };
 
     const handleDeleteClick = () => {
